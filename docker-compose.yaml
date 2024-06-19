@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:13
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 1qaz
+      POSTGRES_USER: root
+      POSTGRES_DB: postgres
+    networks:
+      - bale
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - ./data:/root/redis
+    networks:
+      - bale
+
+  url_shortness_api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: api
+      ports:
+        - "6060:80"
+      restart: always
+      command: /bin/sh -c "alembic upgrade head && uvicorn main:app --port 80 --host 0.0.0.0"
+      environment:
+        DB_HOST: postgres
+        DB_USERNAME: root
+        DB_PASSWORD: 1qaz
+        DB_NAME: postgres
+        DB_PORT: 5432
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        REDIS_DB: 0
+      depends_on:
+        - redis
+        - postgres
+      networks:
+        - bale
+
+networks:
+  bale:
+    driver: bridge
+
