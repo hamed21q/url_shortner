@@ -5,5 +5,10 @@ pytest~=8.2.2
 fastapi~=0.110.1
 SQLAlchemy~=2.0.30
 asyncpg==0.29.0
-fastapi-redis-cache
+redis==5.0.6
 alembic
+pytest-asyncio==0.23.7
+asyncpg==0.29.0
+pybase62==1.0.0
+httpx==0.27.0
+snowflake-id==1.0.2
